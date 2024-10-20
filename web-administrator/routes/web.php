@@ -9,8 +9,6 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketTaskController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [PageController::class, 'dashboard'])->name('dashboard');
-Route::get('/', [PageController::class, 'countEmployees'])->name('dashboard');
 
 Route::resource('employee', EmployeeController::class);
 Route::put('employee/{id}/setInactive', [EmployeeController::class, 'inactive'])->name('setInactive');
@@ -19,7 +17,7 @@ Route::resource('ticket', TicketController::class);
 Route::resource('ticketTask', TicketTaskController::class);
 Route::resource('merchantTicket', MerchantTicketController::class);
 
-Route::get('/home', [SessionController::class, 'home']);
+Route::get('/', [SessionController::class, 'home']);
 Route::get('/login/employee', [SessionController::class, 'employeeLogin']);
 Route::get('/login/merchant', [SessionController::class, 'merchantLogin']);
 Route::post('/session/login', [SessionController::class, 'login']);

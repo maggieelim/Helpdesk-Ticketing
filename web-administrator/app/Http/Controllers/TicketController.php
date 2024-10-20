@@ -60,7 +60,7 @@ class TicketController extends Controller
      */
     public function show(string $id)
     {
-        $data = Ticket::where('id', $id)->first();
+        $data = Ticket::where('TID', $id)->first();
         return view('ticket/show')->with('data', $data);
     }
 
@@ -69,7 +69,7 @@ class TicketController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Ticket::where('id', $id)->first();
+        $data = Ticket::where('TID', $id)->first();
         $status = TicketStatus::select('id', 'status')->distinct()->get();
         $urgensi = TicketUrgensi::select('id', 'urgensi')->distinct()->get();
         $category = TicketCategory::select('category_id', 'category')->distinct()->get();
@@ -104,8 +104,6 @@ class TicketController extends Controller
             'created_at' => Carbon::now()->setTimezone('Asia/Jakarta')
         ];
         TicketStatusDetail::create($statusUpdate);
-
-
         return redirect('ticket')->with('success', 'Ticket Assigned Successfully');
     }
 

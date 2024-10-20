@@ -6,12 +6,6 @@
       <div class="col-sm-6">
         <h1>Ticket</h1>
       </div>
-      <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-          <li class="breadcrumb-item active">Ticket</li>
-        </ol>
-      </div>
     </div>
   </div>
 
@@ -64,12 +58,20 @@
             <tbody>
               @foreach($data as $item)
               <tr>
-                <td class="text-center">{{ $item->merchant->merchant_name }}</td>
+                <td class="text-center">{{ $item->merchant->MID }}</td>
                 <td class="text-center">{{ $item->title }}</td>
                 <td class="text-center">
                   @if($item->ticketUrgensi)
-                  <a class="btn btn-info btn-sm" href="#"
-                    data-id="{{ $item->id }}"
+                  @php
+                  $statusClasses = [
+                  1 => 'btn-info',
+                  2 => 'btn-warning',
+                  3 => 'btn-danger',
+                  ];
+                  $statusClass = $statusClasses[$item->urgency_id] ?? 'btn-danger';
+                  @endphp
+                  <a class="btn {{ $statusClass }} btn-sm" href="#"
+                    data-id="{{ $item->TID }}"
                     data-urgency-id="{{ $item->urgency_id }}"
                     data-action="{{ $item->action }}"
                     data-category-id="{{ $item->category_id }}"
@@ -78,8 +80,8 @@
                     {{ $item->ticketUrgensi->urgensi }}
                   </a>
                   @else
-                  <a class="btn btn-info btn-sm" href="#"
-                    data-id="{{ $item->id }}"
+                  <a class="btn {{ $statusClass }} btn-sm" href="#"
+                    data-id="{{ $item->TID }}"
                     data-action="{{ $item->action }}"
                     data-urgency-id="{{ $item->urgency_id }}"
                     data-category-id="{{ $item->category_id }}"
@@ -91,7 +93,7 @@
                 <td class="text-center">
                   @if($item->ticketCategory)
                   <a class="btn btn-info btn-sm" href="#"
-                    data-id="{{ $item->id }}"
+                    data-id="{{ $item->TID }}"
                     data-urgency-id="{{ $item->urgency_id }}"
                     data-action="{{ $item->action }}"
                     data-category-id="{{ $item->category_id }}"
@@ -101,7 +103,7 @@
                   </a>
                   @else
                   <a class="btn btn-info btn-sm" href="#"
-                    data-id="{{ $item->id }}"
+                    data-id="{{ $item->TID }}"
                     data-action="{{ $item->action }}"
                     data-urgency-id="{{ $item->urgency_id }}"
                     data-category-id="{{ $item->category_id }}"
@@ -134,7 +136,7 @@
                 <td class="text-center">
                   @if($item->status_id == 4)
                   <a class="btn btn-info btn-sm" href="#"
-                    data-id="{{ $item->id }}"
+                    data-id="{{ $item->TID }}"
                     data-action="{{ $item->action }}"
                     data-urgency-id="{{ $item->urgency_id }}"
                     data-category-id="{{ $item->category_id }}"
@@ -149,8 +151,8 @@
                 <td hidden class="updatedAt text-center">{{ $item->updated_at }}</td>
                 <td class="test text-center"></td>
                 <td class="text-center">
-                  <a class="btn btn-info" href='{{url('/ticket/'.$item->id)}}'><i class="fas fa-eye"></i></a>
-                  <a class="btn btn-warning" href='{{url('/ticket/'.$item->id.'/edit')}}'><i class="fas fa-edit"></i></a>
+                  <a class="btn btn-info" href='{{url('/ticket/'.$item->TID)}}'><i class="fas fa-eye"></i></a>
+                  <a class="btn btn-warning" href='{{url('/ticket/'.$item->TID.'/edit')}}'><i class="fas fa-edit"></i></a>
                 </td>
               </tr>
               @endforeach
@@ -203,7 +205,7 @@
           <h5 class="modal-title" id="editModalLabel">Edit Ticket</h5>
         </div>
         <div class="modal-body">
-          <form class="form-horizontal" method="post" action="{{ '/ticket/' . $item->id }}">
+          <form class="form-horizontal" method="post" action="{{ '/ticket/' . $item->TID }}">
             @csrf
             @method('put')
             <div class="mb-3">

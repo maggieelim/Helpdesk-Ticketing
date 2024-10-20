@@ -8,7 +8,6 @@
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
           <li class="breadcrumb-item active">Ticket</li>
         </ol>
       </div>
@@ -75,7 +74,15 @@
                 <td class="text-center">{{ $item->title }}</td>
                 <td class="text-center">
                   @if($item->ticketUrgensi)
-                  <button type="button" class="btn btn-info btn-sm" style="pointer-events: none;">
+                  @php
+                  $statusClasses = [
+                  1 => 'btn-info',
+                  2 => 'btn-warning',
+                  3 => 'btn-danger',
+                  ];
+                  $statusClass = $statusClasses[$item->urgency_id] ?? 'btn-danger';
+                  @endphp
+                  <button type="button" class="btn {{ $statusClass }} btn-sm" style="pointer-events: none;">
                     {{ $item->ticketUrgensi->urgensi }}
                   </button>
                   @else
@@ -86,13 +93,9 @@
                 </td>
                 <td class="text-center">
                   @if($item->ticketCategory)
-                  <button type="button" class="btn btn-info btn-sm" style="pointer-events: none;">
-                    {{ $item->ticketCategory->category }}
-                  </button>
+                  {{ $item->ticketCategory->category }}
                   @else
-                  <button type="button" class="btn btn-info btn-sm" style="pointer-events: none;">
-                    -
-                  </button>
+                  -
                   @endif
                 </td>
                 <td class="createdAt text-center">{{ $item->created_at }}</td>

@@ -236,7 +236,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-light-info elevation-4">
       <!-- Brand Logo -->
-      <a href="{{ route('dashboard') }}" class="brand-link" style="display: flex; justify-content: center; align-items: center;">
+      <a class="brand-link" style="display: flex; justify-content: center; align-items: center;">
         <img src="{{ asset('images/Indopay.png') }}" style="max-width: 80%; height: auto;">
       </a>
 
@@ -256,15 +256,6 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" style="padding-bottom:10%" data-widget="treeview" role="menu" data-accordion="false">
-            <li class="nav-item">
-              <a href="{{route('dashboard')}}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-th"></i>
-                <p>
-                  Dashboard
-                </p>
-              </a>
-            </li>
-
             @if (Auth::user()->role_id == 3)
             <li class="nav-header">Merchant</li>
             <li class="nav-item">

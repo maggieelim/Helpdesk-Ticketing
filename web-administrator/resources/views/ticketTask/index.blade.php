@@ -6,12 +6,6 @@
       <div class="col-sm-6">
         <h1>Ticket Task</h1>
       </div>
-      <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-          <li class="breadcrumb-item active">Ticket Task</li>
-        </ol>
-      </div>
     </div>
   </div>
 
@@ -19,7 +13,7 @@
     <div class="card-body">
       <div class="container-fluid">
         <div class="row mb-3 align-items-center">
-          <div class=" col-md-10 card card-default collapsed-card">
+          <div class=" col-md-12 card card-default collapsed-card">
             <div class="card-header">
               <h3 class="card-title">Filter</h3>
               <div class="card-tools">
@@ -64,12 +58,19 @@
             <tbody>
               @foreach($data as $item)
               <tr>
-                <td class="text-center">{{ $item->merchant->merchant_name }}</td>
+                <td class="text-center">{{ $item->merchant->MID }}</td>
                 <td class="text-center">{{ $item->title }}</td>
-
                 <td class="text-center">
                   @if($item->ticketUrgensi)
-                  <button type="button" class="btn btn-info btn-sm" style="pointer-events: none;">
+                  @php
+                  $statusClasses = [
+                  1 => 'btn-info',
+                  2 => 'btn-warning',
+                  3 => 'btn-danger',
+                  ];
+                  $statusClass = $statusClasses[$item->urgency_id] ?? 'btn-danger';
+                  @endphp
+                  <button type="button" class="btn {{ $statusClass }} btn-sm" style="pointer-events: none;">
                     {{ $item->ticketUrgensi->urgensi }}
                   </button>
                   @else
@@ -80,41 +81,32 @@
                 </td>
                 <td class="text-center">
                   @if($item->ticketCategory)
-                  <button type="button" class="btn btn-info btn-sm" style="pointer-events: none;">
-                    {{ $item->ticketCategory->category }}
-                  </button>
+                  {{ $item->ticketCategory->category }}
                   @else
-                  <button type="button" class="btn btn-info btn-sm" style="pointer-events: none;">
-                    -
-                  </button>
+                  -
                   @endif
                 </td>
                 <td class="createdAt text-center">{{ $item->created_at }}</td>
                 <td class="text-center">
-                  @if($item->status_id == 1)
-                  <button type="button" class="btn btn-warning btn-sm" style="pointer-events: none;">
+                  @php
+                  $statusClasses = [
+                  1 => 'btn-warning',
+                  2 => 'btn-info',
+                  3 => 'btn-success',
+                  ];
+                  $statusClass = $statusClasses[$item->status_id] ?? 'btn-danger';
+                  @endphp
+                  <button type="button" class="btn {{ $statusClass }} btn-sm" style="pointer-events: none;">
                     {{ $item->ticketStatus->status }}
                   </button>
-                  @elseif($item->status_id == 2)
-                  <button type="button" class="btn btn-info btn-sm" style="pointer-events: none;">
-                    {{ $item->ticketStatus->status }}
-                  </button>
-                  @elseif($item->status_id ==3)
-                  <button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">
-                    {{ $item->ticketStatus->status }}
-                  </button>
-                  @else
-                  <button type="button" class="btn btn-danger btn-sm" style="pointer-events: none;">
-                    {{ $item->ticketStatus->status }}
-                  </button>
-                  @endif
                 </td>
+
                 <td hidden class="updatedAt text-center">{{ $item->updated_at }}</td>
                 <td class="test text-center"></td>
                 <td class="text-center">
                   <div class="d-flex justify-content-center">
                     @if($item->status_id != 3)
-                    <form method="post" action="{{'/ticketTask/'.$item->id}}">
+                    <form method="post" action="{{'/ticketTask/'.$item->TID}}">
                       @csrf
                       @method('put')
                       <input type="hidden" name="status" value="2">
@@ -122,7 +114,7 @@
                         In Progress</button>
 
                     </form>
-                    <form method="post" action="{{'/ticketTask/'.$item->id}}">
+                    <form method="post" action="{{'/ticketTask/'.$item->TID}}">
                       @csrf
                       @method('put')
                       <input type="hidden" name="status" value="3">
@@ -135,7 +127,7 @@
                     <button class="btn btn-success btn-sm mr-1" disabled>Done</button>
                     @endif
 
-                    <a class="btn btn-info btn-sm" href='{{url('/ticketTask/'.$item->id)}}'><i class="fas fa-eye"></i></a>
+                    <a class="btn btn-info btn-sm" href='{{url('/ticketTask/'.$item->TID)}}'><i class="fas fa-eye"></i></a>
                   </div>
                 </td>
               </tr>

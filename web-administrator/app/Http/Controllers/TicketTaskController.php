@@ -41,9 +41,8 @@ class TicketTaskController extends Controller
      */
     public function show(string $id)
     {
-        $data = Ticket::where('id', $id)->first();
-        $data1 = TicketTask::where('id', $id)->first();
-        return view('ticketTask.show', compact('data', 'data1'));
+        $data = Ticket::where('TID', $id)->first();
+        return view('ticketTask.show', compact('data'));
     }
 
     /**
@@ -51,10 +50,9 @@ class TicketTaskController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Ticket::where('id', $id)->first();
-        $data1 = TicketTask::where('id', $id)->first();
+        $data = Ticket::where('TID', $id)->first();
         $status = TicketStatus::select('id', 'status')->where('id', '!=', 4)->distinct()->get();
-        return view('ticketTask.edit', compact('data', 'data1', 'status'));
+        return view('ticketTask.edit', compact('data',  'status'));
     }
 
     /**
