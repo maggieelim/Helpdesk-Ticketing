@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TicketUrgensi extends Model
 {
     use HasFactory;
-    protected $table = "m_ticketurgensi";
+    protected $table = "tiket_urgency";
     public $timestamps = false;
 
     protected $fillable = [
-        "id", "urgensi"
+        "urgency_id",
+        "urgency"
     ];
 }

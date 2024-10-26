@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\MerchantTicketController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SessionController;
@@ -14,6 +15,7 @@ Route::resource('employee', EmployeeController::class);
 Route::put('employee/{id}/setInactive', [EmployeeController::class, 'inactive'])->name('setInactive');
 Route::put('employee/{id}/setActive', [EmployeeController::class, 'active'])->name('setActive');
 Route::resource('ticket', TicketController::class);
+Route::resource('report', EvaluationController::class);
 Route::resource('ticketTask', TicketTaskController::class);
 Route::resource('merchantTicket', MerchantTicketController::class);
 

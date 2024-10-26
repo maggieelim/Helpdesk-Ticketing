@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TicketStatusDetail extends Model
 {
     use HasFactory;
-    protected $table = "ticket_status_detail";
+    protected $table = "tiket_status_detail";
     public $timestamps = false;
 
     protected $fillable = [

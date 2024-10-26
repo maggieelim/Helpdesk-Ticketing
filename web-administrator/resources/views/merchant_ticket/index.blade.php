@@ -83,7 +83,7 @@
                   $statusClass = $statusClasses[$item->urgency_id] ?? 'btn-danger';
                   @endphp
                   <button type="button" class="btn {{ $statusClass }} btn-sm" style="pointer-events: none;">
-                    {{ $item->ticketUrgensi->urgensi }}
+                    {{ $item->ticketUrgensi->urgency }}
                   </button>
                   @else
                   <button type="button" class="btn btn-info btn-sm" style="pointer-events: none;">

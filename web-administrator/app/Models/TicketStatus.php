@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TicketStatus extends Model
 {
     use HasFactory;
-    protected $table = "m_ticketstatus";
+    protected $table = "tiket_status";
     public $timestamps = false;
 
     protected $fillable = [
-        "id", "status"
+        "status_id",
+        "status"
     ];
 }

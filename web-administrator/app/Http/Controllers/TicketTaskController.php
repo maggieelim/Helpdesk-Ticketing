@@ -8,6 +8,7 @@ use App\Models\TicketStatusDetail;
 use App\Models\TicketTask;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TicketTaskController extends Controller
 {
@@ -16,7 +17,8 @@ class TicketTaskController extends Controller
      */
     public function index()
     {
-        $data = Ticket::where('status_id', '!=', 4)->orderBy('id', 'asc')->paginate(15);
+        $user = Auth::user();
+        $data = Ticket::where('status_id', '!=', 4)->where('action', $user->id)->orderBy('created_at', 'desc')->paginate(15);
         return view('ticketTask.index', compact('data'));
     }
 

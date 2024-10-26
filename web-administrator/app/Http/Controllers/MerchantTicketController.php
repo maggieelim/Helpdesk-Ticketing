@@ -19,12 +19,8 @@ class MerchantTicketController extends Controller
     public function index()
     {
         $user = Auth::user()->id;
-        $data = Ticket::orderBy('TID', 'asc')->where('MID', $user)->paginate(15);
-        $employee = employee::select('NIP', 'first_name', 'last_name')->distinct()->get();
-        $MID = Merchant::select('MID', 'merchant_name')->distinct()->get();
-        $status = TicketStatus::select('id', 'status')->distinct()->get();
-        $urgensi = TicketUrgensi::select('id', 'urgensi')->distinct()->get();
-        return view('merchant_ticket.index', compact('data', 'employee', 'MID', 'status', 'urgensi'));
+        $data = Ticket::orderBy('created_at', 'desc')->where('MID', $user)->paginate(15);
+        return view('merchant_ticket.index', compact('data'));
     }
 
     /**

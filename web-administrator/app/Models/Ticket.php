@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     use HasFactory;
-    protected $table = "ticket";
+    protected $table = "tiket";
     public $timestamps = false;
 
     protected $fillable = [
@@ -25,11 +25,11 @@ class Ticket extends Model
     ];
     public function ticketStatus()
     {
-        return $this->belongsTo(TicketStatus::class, 'status_id');
+        return $this->belongsTo(TicketStatus::class, 'status_id', "status_id");
     }
     public function ticketUrgensi()
     {
-        return $this->belongsTo(TicketUrgensi::class, 'urgency_id');
+        return $this->belongsTo(TicketUrgensi::class, 'urgency_id', 'urgency_id');
     }
     public function ticketCategory()
     {

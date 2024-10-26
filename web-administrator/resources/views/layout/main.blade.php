@@ -278,6 +278,14 @@
                 </p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{route('report.index')}}" class="nav-link {{ request()->routeIs('report.*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                <p>
+                  Report
+                </p>
+              </a>
+            </li>
             @endif
 
             @if (Auth::user()->role_id == 2)
@@ -345,6 +353,12 @@
   <!-- daterangepicker -->
   <script src="{{asset('lte/plugins/moment/moment.min.js')}}"></script>
   <script src="{{asset('lte/plugins/daterangepicker/daterangepicker.js')}}"></script>
+  <!-- FLOT CHARTS -->
+  <script src="{{asset('lte/plugins/flot/jquery.flot.js')}}"></script>
+  <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+  <script src="{{asset('lte/plugins/flot/plugins/jquery.flot.resize.js')}}"></script>
+  <!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+  <script src="{{asset('lte/plugins/flot/plugins/jquery.flot.pie.js')}}"></script>
   <!-- Tempusdominus Bootstrap 4 -->
   <script src="{{asset('lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
   <!-- Summernote -->

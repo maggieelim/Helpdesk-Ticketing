@@ -23,9 +23,9 @@ class TicketController extends Controller
      */
     public function index()
     {
-        $data = Ticket::orderBy('id', 'asc')->paginate(15);
+        $data = Ticket::orderBy('created_at', 'desc')->paginate(15);
         $employee = employee::select('NIP', 'first_name', 'last_name')->distinct()->get();
-        $urgensi = TicketUrgensi::select('id', 'urgensi')->distinct()->get();
+        $urgensi = TicketUrgensi::select('urgency_id', 'urgency')->distinct()->get();
         $category = TicketCategory::select('category_id', 'category')->distinct()->get();
         foreach ($data as $ticket) {
             $merchantServicePoint = $ticket->merchant->service_point;
