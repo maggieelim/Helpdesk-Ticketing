@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\employee;
 use App\Models\Ticket;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class EvaluationController extends Controller
@@ -11,18 +14,127 @@ class EvaluationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function manager(Request $request)
     {
-        $data = Ticket::select(
-            'action',
-            DB::raw('COUNT(*) as total_tickets'),
-            DB::raw('ROUND(AVG(EXTRACT(EPOCH FROM updated_at - created_at) / 3600)) as avg_resolution_time')
-        )
-            ->where('status_id', 3)
-            ->groupBy('action')
-            ->paginate(10);
+        // Get start and end dates from the request
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
 
-        return view('ticket.evaluation', compact('data'));
+        $query = Ticket::where('status_id', 5);
+        // Apply date filtering if provided
+        if ($startDate) {
+            $query->whereDate('created_at', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->whereDate('created_at', '<=', $endDate);
+        }
+        $tickets = $query->get()->groupBy('action');
+
+        // Hasil data per action
+        $actionData = [];
+        $totalAvgResolutionTime = 0; // Variable to store the sum of avg_resolution_time
+        $actionCount = 0; // To count how many actions (groups) we have
+
+        foreach ($tickets as $action => $groupedTickets) {
+            $totalTickets = $groupedTickets->count();
+            $totalResolutionTime = $groupedTickets->sum(function ($ticket) {
+                return round(Carbon::parse($ticket->created_at)->diffInBusinessHours(Carbon::parse($ticket->updated_at)), 2);
+            });
+
+            $employee = employee::select('first_name', 'last_name')->where('NIP', $action)->first();
+
+            // Now you can access the first_name and last_name properties
+            $avgResolutionTime = $totalTickets > 0 ? round($totalResolutionTime / $totalTickets, 2) : 0;
+
+            $data[] = [
+                'first_name' => $employee->first_name,
+                'last_name' => $employee->last_name,
+                'action' => $action,
+                'total_tickets' => $totalTickets,
+                'total_resolution_time' => $totalResolutionTime,
+                'avg_resolution_time' => $avgResolutionTime,
+            ];
+
+            // Add to overall sum and action count for overall average calculation
+            $totalAvgResolutionTime += $avgResolutionTime;
+            $actionCount++;
+        }
+
+        // Calculate overall average resolution time
+        $overallAvg = $actionCount > 0 ? round($totalAvgResolutionTime / $actionCount, 2) : 0;
+
+        return view('ticket.evaluation', compact('data', 'overallAvg'));
+    }
+
+
+    public function technicalSupport(Request $request)
+    {
+        $user = Auth::user();
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+        $categoryCountsQuery = Ticket::select('tk.category', DB::raw('count(*) as totalCategory'))
+            ->join('tiket_category as tk', 'tiket.category_id', '=', 'tk.category_id') // Join dengan tabel tiket_category
+            ->where('tiket.action', $user->id)
+            ->where('tiket.status_id', 5);
+
+
+        $urgencyCountsQuery = Ticket::select('tk.urgency', DB::raw('count(*) as totalUrgency'))
+            ->join('tiket_urgency as tk', 'tiket.urgency_id', '=', 'tk.urgency_id') // Join dengan tabel tiket_category
+            ->where('tiket.action', $user->id)
+            ->where('tiket.status_id', 5);
+
+        // Ambil data tiket yang telah diselesaikan
+        $query = Ticket::where('status_id', 5)
+            ->where('action', $user->id);
+
+        if ($startDate) {
+            $query->whereDate('created_at', '>=', $startDate);
+            $categoryCountsQuery->whereDate('tiket.created_at', '>=', $startDate);
+            $urgencyCountsQuery->whereDate('tiket.created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->whereDate('created_at', '<=', $endDate);
+            $categoryCountsQuery->whereDate('tiket.created_at', '<=', $endDate);
+            $urgencyCountsQuery->whereDate('tiket.created_at', '<=', $endDate);
+        }
+
+        $categoryCounts = $categoryCountsQuery->groupBy('tk.category')
+            ->orderBy('tk.category')
+            ->get();
+
+        $urgencyCounts = $urgencyCountsQuery->groupBy('tk.urgency')
+            ->orderBy('tk.urgency')
+            ->get();
+
+        $tickets = $query->orderBy('id', 'asc')->get();
+        $totalTickets = $tickets->count();
+        $totalResolutionTime = $tickets->sum(function ($ticket) {
+            return round(Carbon::parse($ticket->created_at)->diffInBusinessHours(Carbon::parse($ticket->updated_at)), 2);
+        });
+
+        $avgResolutionTime = $totalTickets > 0 ? round($totalResolutionTime / $totalTickets, 2) : 0; // Hitung rata-rata waktu penyelesaian
+
+        // Menyusun data untuk setiap tiket
+        $ticketData = [];
+        foreach ($tickets as $index => $ticket) {
+            $start = Carbon::parse($ticket->created_at);
+            $end = Carbon::parse($ticket->updated_at);
+            $resolutionTime = $start->diffInBusinessHours($end);
+            $ticketData[] = [
+                'ticket_number' => $ticket->TID, // Nomor urut tiket
+                'resolution_time' => $resolutionTime // Waktu penyelesaian
+            ];
+        }
+
+        $data = [
+            'total_tickets' => $totalTickets,
+            'total_resolution_time' => $totalResolutionTime,
+            'avg_resolution_time' => $avgResolutionTime,
+            'ticket_details' => $ticketData
+        ];
+
+        return view('ticketTask.evaluation', compact('data', 'categoryCounts', 'urgencyCounts'));
     }
 
     /**

@@ -39,10 +39,6 @@ class Ticket extends Model
     {
         return $this->belongsTo(Merchant::class, 'MID', 'MID');
     }
-    public function task()
-    {
-        return $this->belongsTo(TicketTask::class, 'TID', 'id');
-    }
     public function employee()
     {
         return $this->belongsTo(employee::class, 'action', 'NIP');

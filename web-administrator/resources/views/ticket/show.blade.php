@@ -63,16 +63,18 @@
         <p>{{ $data->title }}</p>
         <label class="form-label">Ticket Description</label>
         <p>{{ $data->note }}</p>
+        <label class="form-label">Comment</label>
+        <p>{{ $data->comment }}</p>
       </div>
 
       <!-- Ticket Info Section -->
       <div class="row">
         <div class="col-6">
           <label class="form-label">Ticket Urgency</label>
-          <p>@if($data->urgensi_id == null)
+          <p>@if($data->urgency_id == null)
             -
             @else
-            {{ $data->ticketUrgensi->urgensi }}
+            {{ $data->ticketUrgensi->urgency }}
             @endif
           </p>
         </div>
@@ -93,13 +95,9 @@
           <label class="form-label">Ticket Created Date</label>
           <p>{{ $data->created_at }}</p>
         </div>
-        <div class="col-6">
-          <label class="form-label">Ticket Due Date</label>
-          <p>{{ $data->due_date }}</p>
-        </div>
-
       </div>
     </div>
   </div>
+  <a type="button" href="{{ url('/ticket/print/' . rawurlencode(rawurlencode($data->TID))) }}" class="btn custom-card-header print-button custom-margin" target="_blank"><i class="fas fa-print"></i> Print</a>
 </div>
 @endsection

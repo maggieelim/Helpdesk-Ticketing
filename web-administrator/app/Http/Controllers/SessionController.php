@@ -123,6 +123,6 @@ class SessionController extends Controller
     function logout()
     {
         Auth::logout();
-        return redirect('home')->with('success', 'Berhasil logout');
+        return redirect('')->with('success', 'Berhasil logout');
     }
 }

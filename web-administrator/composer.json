@@ -6,8 +6,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "cmixin/business-time": "^1.14",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
+        "mobiledetect/mobiledetectlib": "^4.8",
         "mpdf/mpdf": "^6.1"
     },
     "require-dev": {

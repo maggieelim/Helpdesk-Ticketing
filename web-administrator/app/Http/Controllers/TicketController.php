@@ -2,41 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assets;
 use App\Models\employee;
 use App\Models\Merchant;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
 use App\Models\TicketStatus;
 use App\Models\TicketStatusDetail;
-use App\Models\TicketTask;
 use App\Models\TicketUrgensi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class TicketController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+
+    public function index(Request $request)
     {
-        $data = Ticket::orderBy('created_at', 'desc')->paginate(15);
-        $employee = employee::select('NIP', 'first_name', 'last_name')->distinct()->get();
-        $urgensi = TicketUrgensi::select('urgency_id', 'urgency')->distinct()->get();
-        $category = TicketCategory::select('category_id', 'category')->distinct()->get();
+        // Ambil semua employee dengan service point
+        $actionNips = Ticket::select('action')->distinct()->pluck('action')->toArray();
+
+        $employees = Employee::where('role', 2)
+            ->whereIn('NIP', $actionNips)
+            ->get();
+
+        $query = Ticket::orderBy('created_at', 'desc');
+
+        if ($request->filled('NIP')) {
+            $query->where('action', $request->NIP);
+        }
+        if ($request->filled('urgency')) {
+            $query->where('urgency_id', $request->urgency);
+        }
+
+        $data = $query->paginate(15);
+
+        $urgensi = TicketUrgensi::select('urgency_id', 'urgency')->orderBy('urgency_id', 'asc')->distinct()->get();
+        $category = TicketCategory::select('category_id', 'category')->orderBy('category', 'asc')->distinct()->get();
+
+        // Mendapatkan available Technical Support (TS) untuk setiap tiket
         foreach ($data as $ticket) {
             $merchantServicePoint = $ticket->merchant->service_point;
 
             // Mendapatkan TS yang service point-nya sama dengan merchant yang membuat tiket
-            $ticket->availableTS = employee::select('NIP', 'first_name', 'last_name')
+            $ticket->availableTS = Employee::select('NIP', 'first_name', 'last_name')
                 ->where('service_point', $merchantServicePoint)
                 ->distinct()
                 ->get();
         }
-        return view('ticket.index', compact('data', 'employee', 'urgensi', 'category'));
+
+        return view('ticket.index', compact('data', 'employees', 'urgensi', 'category'));
     }
 
     /**
@@ -64,6 +81,11 @@ class TicketController extends Controller
         return view('ticket/show')->with('data', $data);
     }
 
+    public function view_pdf(string $id)
+    {
+        $data = Ticket::where('TID', $id)->first();
+        return view('ticket/print', compact('data'));
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -83,28 +105,27 @@ class TicketController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $action = Ticket::select('action')->where('TID', $id)->first();
         $updateTicket = [
-            'status_id' => '1',
+            'status_id' => $request->input('status'),
             'category_id' => $request->input('category'),
             'urgency_id' => $request->input('urgensi'),
             'action' => $request->input('NIP'),
             'updated_at' => Carbon::now()->setTimezone('Asia/Jakarta')
         ];
+
         Ticket::where('TID', $id)->update($updateTicket);
 
-        $request->validate([
-            'NIP' => 'required',
-        ], [
-            'NIP.required' => 'NIP field is required.',
-        ]);
-
-        $statusUpdate = [
-            'TID' => $id,
-            'status_id' => '1',
-            'created_at' => Carbon::now()->setTimezone('Asia/Jakarta')
-        ];
-        TicketStatusDetail::create($statusUpdate);
-        return redirect('ticket')->with('success', 'Ticket Assigned Successfully');
+        if ($action->action === null && $request->input('NIP') !== null) {
+            $statusUpdate = [
+                'TID' => $id,
+                'status_id' => '1',
+                'created_at' => Carbon::now()->setTimezone('Asia/Jakarta')
+            ];
+            TicketStatusDetail::create($statusUpdate);
+            return redirect('ticket')->with('success', 'Ticket Assigned Successfully');
+        }
+        return redirect('ticket')->with('success', 'Ticket Updated Successfully');
     }
 
     /**

@@ -1,23 +1,24 @@
 <?php
 
-
-use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\MerchantTicketController;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketTaskController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::resource('employee', EmployeeController::class);
-Route::put('employee/{id}/setInactive', [EmployeeController::class, 'inactive'])->name('setInactive');
-Route::put('employee/{id}/setActive', [EmployeeController::class, 'active'])->name('setActive');
 Route::resource('ticket', TicketController::class);
-Route::resource('report', EvaluationController::class);
+Route::get('/ticket/print/{id}', [TicketController::class, 'view_pdf'])->name('ticket.print');
+
+Route::get('report/manager', [EvaluationController::class, 'manager'])->name('managerReport');
+Route::get('report/technicalSupport', [EvaluationController::class, 'technicalSupport'])->name('tsReport');
+
 Route::resource('ticketTask', TicketTaskController::class);
+Route::get('/ticketTask/print/{id}', [TicketTaskController::class, 'view_pdf'])->name('ticketTask.print');
+
 Route::resource('merchantTicket', MerchantTicketController::class);
+Route::put('/merchantTicket/comment/{id}', [MerchantTicketController::class, 'comment'])->name('ticket.comment');
+Route::get('/merchantTicket/print/{id}', [MerchantTicketController::class, 'view_pdf'])->name('merchantTicket.print');
 
 Route::get('/', [SessionController::class, 'home']);
 Route::get('/login/employee', [SessionController::class, 'employeeLogin']);

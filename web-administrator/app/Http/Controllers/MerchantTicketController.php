@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assets;
 use App\Models\employee;
 use App\Models\Merchant;
 use App\Models\Ticket;
 use App\Models\TicketStatus;
-use App\Models\TicketTask;
+use App\Models\TicketStatusDetail;
 use App\Models\TicketUrgensi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,11 +15,24 @@ use Illuminate\Support\Facades\Session;
 
 class MerchantTicketController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user()->id;
-        $data = Ticket::orderBy('created_at', 'desc')->where('MID', $user)->paginate(15);
-        return view('merchant_ticket.index', compact('data'));
+        $status = TicketStatus::all();
+        $query = Ticket::where('MID', $user)->orderBy('created_at', 'desc');
+        $urgensi = TicketUrgensi::select('urgency_id', 'urgency')->orderBy('urgency_id', 'asc')->distinct()->get();
+
+        // Filter berdasarkan status jika parameter status ada
+        if ($request->filled('status')) {
+            $query->where('status_id', $request->status);
+        }
+        if ($request->filled('urgency')) {
+            $query->where('urgency_id', $request->urgency);
+        }
+
+        // Mengurutkan dan melakukan paginasi
+        $data = $query->paginate(10);
+        return view('merchant_ticket.index', compact('data', "status", "urgensi"));
     }
 
     /**
@@ -39,8 +51,6 @@ class MerchantTicketController extends Controller
      */
     public function store(Request $request)
     {
-        Session::flash('title', $request->title);
-        Session::flash('note', $request->note);
         Session::flash('MID', $request->MID);
 
         date_default_timezone_set('Asia/Jakarta');
@@ -69,8 +79,14 @@ class MerchantTicketController extends Controller
      */
     public function show(string $id)
     {
-        $data = Ticket::where('id', $id)->first();
+        $data = Ticket::where('TID', $id)->first();
         return view('merchant_ticket/show')->with('data', $data);
+    }
+
+    public function view_pdf(string $id)
+    {
+        $data = Ticket::where('TID', $id)->first();
+        return view('merchant_ticket/print', compact('data'));
     }
 
     /**
@@ -93,23 +109,46 @@ class MerchantTicketController extends Controller
     public function update(Request $request, string $id)
     {
         $updateTicket = [
-            'status' => '1',
+            'status_id' => $request->input('status'),
             'updated_at' => Carbon::now()->setTimezone('Asia/Jakarta')
         ];
-        Ticket::where('id', $id)->update($updateTicket);
-
-        $request->validate([
-            'NIP' => 'required',
-        ], [
-            'NIP.required' => 'NIP field is required.',
-        ]);
-        $data = [
-            'id' => $id,
-            'NIP' => $request->input('NIP'),
+        Ticket::where('TID', $id)->update($updateTicket);
+        $statusUpdate = [
+            'TID' => $id,
+            'status_id' => '5',
+            'created_at' => Carbon::now()->setTimezone('Asia/Jakarta')
         ];
-        TicketTask::create($data);
-        return redirect('ticket')->with('success', 'Ticket Assigned Successfully');
+        TicketStatusDetail::create($statusUpdate);
+        return redirect('merchantTicket')->with('success', 'Ticket Closed');
     }
+
+    public function comment(Request $request, string $id)
+    {
+        $status = Ticket::select('status_id')->where('TID', $id)->first();
+
+        if ($status->status_id === 3) {
+            $newStatusId = 2;
+            $statusUpdate = [
+                'TID' => $id,
+                'status_id' => '2',
+                'created_at' => Carbon::now()->setTimezone('Asia/Jakarta')
+            ];
+            TicketStatusDetail::create($statusUpdate);
+        } else {
+            $newStatusId =  $request->input('status');
+        }
+        $commentUpdate = [
+            'comment' => $request->input('comment'),
+            'status_id' => $newStatusId,
+            'category_id' => $request->input('category'),
+            'urgency_id' => $request->input('urgensi'),
+            'action' => $request->input('NIP'),
+            'updated_at' => Carbon::now()->setTimezone('Asia/Jakarta')
+        ];
+        Ticket::where('TID', $id)->update($commentUpdate);
+        return redirect('merchantTicket')->with('success', 'Comment Created Successfully');
+    }
+
 
     /**
      * Remove the specified resource from storage.

@@ -1,7 +1,7 @@
 @extends('layout/login')
 @section('dahsboardContent1')
-<div class="content-wrapper d-flex justify-content-center align-items-center" style="background-color:white">
-  <div class="w-50 border rounded px-3 py-3">
+<div class="content-wrapper flex-column d-flex justify-content-center align-items-center" style="background-color:white">
+  <div class="w-50 border rounded px-3 py-3 mb-5">
     <h1 class="text-center">OTP Verification</h1>
     <form id="otpVerifyForm" method="POST" action="{{ url('/otpVerification') }}">
       @csrf
@@ -12,8 +12,9 @@
         <input type="text" class="form-control" id="otp" name="otp" required>
       </div>
 
-      <button type="submit" class="btn btn-primary">Verify OTP</button>
+      <button type="submit" class="btn custom-card-header">Verify OTP</button>
     </form>
   </div>
+  <img class="center mt-5" src="{{ asset('images/Indopay.png') }}" alt="IndopayLogo" style="max-width: 15%; height: auto;">
 </div>
 @endsection
