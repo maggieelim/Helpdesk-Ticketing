@@ -190,7 +190,7 @@
           <h5 class="modal-title" id="assignModalLabel">Assign to technical support</h5>
         </div>
         <div class="modal-body">
-          <form class="form-horizontal" method="post" action="{{'/ticket/'.$item->TID}}">
+          <form class="form-horizontal" method="post" action="{{isset($item)? url('/ticket/'.$item->TID) : '#'}}">
             @csrf
             @method('put')
             <input type="hidden" name="TID" id="TID" value="">
@@ -202,11 +202,13 @@
               <span class="text-danger font-weight-bold">*</span>
               <select name="NIP" class="form-control select2bs4" id="NIP" style="width: 100%;">
                 <option disabled value="">Select Technical Support</option>
+                @if(isset($item))
                 @foreach($item->availableTS as $NIP)
                 <option value="{{ $NIP->NIP }}" {{ old('NIP', Session::get('NIP')) == $NIP->NIP ? 'selected' : '' }}>
                   {{ $NIP->first_name }}
                 </option>
                 @endforeach
+                @endif
               </select>
             </div>
             <div class="d-flex justify-content-between">
@@ -226,7 +228,7 @@
           <h5 class="modal-title" id="editModalLabel">Edit Ticket</h5>
         </div>
         <div class="modal-body">
-          <form class="form-horizontal" method="post" action="{{ '/ticket/' . $item->TID }}">
+          <form class="form-horizontal" method="post" action="{{isset($item)? url('/ticket/'.$item->TID) : '#'}}">
             @csrf
             @method('put')
             <div class="mb-3">
@@ -237,11 +239,13 @@
               <span class="text-danger font-weight-bold">*</span>
               <select name="urgensi" class="form-control select2bs4" id="urgensi" style="width: 100%;">
                 <option disabled value="">Select Urgency</option>
+                @if(isset($item))
                 @foreach($urgensi as $status)
                 <option value="{{ $status->urgency_id }}" {{ $status->urgency_id == $item->urgency_id ? 'selected':'' }}>
                   {{ $status->urgency }}
                 </option>
                 @endforeach
+                @endif
               </select>
             </div>
             <div class="mb-3">
@@ -249,11 +253,13 @@
               <span class="text-danger font-weight-bold">*</span>
               <select name="category" class="form-control select2bs4" id="category" style="width: 100%;">
                 <option disabled value="">Select Category</option>
+                @if(isset($item))
                 @foreach($category as $cat)
                 <option value="{{ $cat->category_id }}" {{ $cat->category_id == $item->category_id ? 'selected' : '' }}>
                   {{ $cat->category }}
                 </option>
                 @endforeach
+                @endif
               </select>
             </div>
             <input type="hidden" id="NIP" class="form-control" name="NIP" value="">

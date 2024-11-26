@@ -32,6 +32,7 @@ class EvaluationController extends Controller
         $tickets = $query->get()->groupBy('action');
 
         // Hasil data per action
+        $data = []; // Initialize $data as an empty array
         $actionData = [];
         $totalAvgResolutionTime = 0; // Variable to store the sum of avg_resolution_time
         $actionCount = 0; // To count how many actions (groups) we have
