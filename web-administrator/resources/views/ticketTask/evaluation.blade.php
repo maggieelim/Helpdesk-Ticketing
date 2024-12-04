@@ -91,11 +91,14 @@
                 </h3>
 
                 <div class="card-tools">
+                  <a id="print-line-chart"
+                    href="#"
+                    class="btn btn-tool"
+                    target="_blank">
+                    <i class="fas fa-print"></i>
+                  </a>
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
                   </button>
                 </div>
               </div>
@@ -116,11 +119,14 @@
                   </h3>
 
                   <div class="card-tools">
+                    <a id="print-donut-chart"
+                      href="#"
+                      class="btn btn-tool"
+                      target="_blank">
+                      <i class="fas fa-print"></i>
+                    </a>
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                       <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove">
-                      <i class="fas fa-times"></i>
                     </button>
                   </div>
                 </div>
@@ -140,11 +146,14 @@
                   </h3>
 
                   <div class="card-tools">
+                    <a id="print-donut1-chart"
+                      href="#"
+                      class="btn btn-tool"
+                      target="_blank">
+                      <i class="fas fa-print"></i>
+                    </a>
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                       <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove">
-                      <i class="fas fa-times"></i>
                     </button>
                   </div>
                 </div>
@@ -178,6 +187,66 @@
     });
 
     console.log(chartData); // Debug: Check the extracted data
+
+    // Print Line Chart
+    $('#print-line-chart').click(function(e) {
+      e.preventDefault();
+      localStorage.setItem('chartData', JSON.stringify(chartData));
+      localStorage.setItem('chartType', 'line'); // Mark chart type
+      window.open('/ticketTaskEvaluation/print/line-chart', '_blank');
+    });
+
+    // Print Donut Chart 1
+    $('#print-donut-chart').click(function(e) {
+      e.preventDefault();
+      var donutData = {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+        }]
+      };
+      $('table tbody tr').each(function() {
+        var category = $(this).find('#category').text(); // Get category name
+        var totalCategory = parseInt($(this).find('#totalCat').text()); // Get total tickets
+
+        if (!isNaN(totalCategory) && totalCategory > 0) {
+          donutData.labels.push(category);
+          donutData.datasets[0].data.push(totalCategory);
+          console.log(category, totalCategory); // Debug: Check if category data is added
+
+        }
+      });
+      // Store the data and chart type in localStorage
+      localStorage.setItem('donutData', JSON.stringify(donutData));
+      localStorage.setItem('chartType', 'donut'); // Mark chart type as donut
+      window.open('/ticketTaskEvaluation/print/donut-chart', '_blank');
+    });
+
+    // Print Donut Chart 2 (Urgency)
+    $('#print-donut1-chart').click(function(e) {
+      e.preventDefault();
+      var donutData1 = {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }]
+      };
+      $('table tbody tr').each(function() {
+        var urgency = $(this).find('#urgency').text(); // Get urgency name
+        var totalUrgency = parseInt($(this).find('#totalUrg').text()); // Get total tickets for urgency
+
+        if (!isNaN(totalUrgency) && totalUrgency > 0) {
+          donutData1.labels.push(urgency);
+          donutData1.datasets[0].data.push(totalUrgency);
+        }
+      });
+      // Store the data and chart type in localStorage
+      localStorage.setItem('donutData1', JSON.stringify(donutData1));
+      localStorage.setItem('chartType', 'donut1'); // Mark chart type as donut1
+      window.open('/ticketTaskEvaluation/print/donut1-chart', '_blank');
+    });
 
     // Create the line chart
     $.plot('#line-chart', [{

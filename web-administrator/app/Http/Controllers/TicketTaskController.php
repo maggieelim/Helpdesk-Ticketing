@@ -65,6 +65,10 @@ class TicketTaskController extends Controller
         return view('ticketTask/print', compact('data'));
     }
 
+    public function printChart()
+    {
+        return view('ticketTask/print_evaluation');
+    }
     /**
      * Show the form for editing the specified resource.
      */

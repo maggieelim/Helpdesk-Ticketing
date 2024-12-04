@@ -98,6 +98,6 @@
       </div>
     </div>
   </div>
-  <a type="button" href="{{ url('/merchantTicket/print/' . rawurlencode(rawurlencode($data->TID))) }}" class="btn custom-card-header print-button custom-margin" target="_blank"><i class="fas fa-print"></i> Print</a>
+  <a type="button" href="{{ url('/merchantTicket/print/' . rawurlencode(rawurlencode($data->TID))) }}" class="btn custom-card-header print-button custom-margin mb-3" target="_blank"><i class="fas fa-print"></i> Print</a>
 </div>
 @endsection

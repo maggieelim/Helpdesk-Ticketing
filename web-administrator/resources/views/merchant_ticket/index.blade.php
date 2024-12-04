@@ -237,7 +237,7 @@
             <input type="hidden" name="urgensi" id="urgensi" value="">
             <label for="comment" class="form-label">Comment</label>
             <span class="text-danger font-weight-bold">*</span>
-            <input type="text" placeholder="Enter comment" id="comment" class="form-control" name="comment" value="{{Session::get('comment')}}">
+            <input type="text" placeholder="Enter comment" id="comment" class="form-control" name="comment" value="{{Session::get('comment')}}" autocomplete="off">
           </div>
           <div class="d-flex justify-content-between">
             <button type="button" class="btn custom-card-header" data-dismiss="modal">Cancel</button>

@@ -11,6 +11,7 @@ use App\Models\TicketStatusDetail;
 use App\Models\TicketUrgensi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
@@ -86,6 +87,12 @@ class TicketController extends Controller
         $data = Ticket::where('TID', $id)->first();
         return view('ticket/print', compact('data'));
     }
+
+    public function printChart()
+    {
+        return view('ticket/print_evaluation');
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

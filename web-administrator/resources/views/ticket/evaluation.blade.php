@@ -75,11 +75,14 @@
                 </h3>
 
                 <div class="card-tools">
+                  <a id="print-bar-chart"
+                    href="#"
+                    class="btn btn-tool"
+                    target="_blank">
+                    <i class="fas fa-print"></i>
+                  </a>
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
                   </button>
                 </div>
               </div>
@@ -97,11 +100,14 @@
                 </h3>
 
                 <div class="card-tools">
+                  <a id="print-line-chart"
+                    href="#"
+                    class="btn btn-tool"
+                    target="_blank">
+                    <i class="fas fa-print"></i>
+                  </a>
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
                   </button>
                 </div>
               </div>
@@ -140,7 +146,25 @@
     });
 
     console.log(chartData); // Debug: Check the extracted data
+    $('#print-bar-chart').click(function(e) {
+      e.preventDefault(); // Mencegah default behavior tombol
 
+      localStorage.setItem('chartData', JSON.stringify(chartData));
+      localStorage.setItem('chartType', 'bar'); // Tandai jenis chart
+
+      // Navigasi ke halaman cetak dengan query parameter
+      window.open('/dashboard/print/bar-chart', '_blank');
+    });
+
+    $('#print-line-chart').click(function(e) {
+      e.preventDefault(); // Mencegah default behavior tombol
+
+      localStorage.setItem('chartData', JSON.stringify(chartData));
+      localStorage.setItem('chartType', 'line'); // Tandai jenis chart
+
+      // Navigasi ke halaman cetak dengan query parameter
+      window.open('/dashboard/print/line-chart', '_blank');
+    });
     // Prepare data for plotting (for line chart)
     var plotData = chartData.map(item => [item.employee, item.avgResolutionTime]);
     var baselineData = chartData.map(item => [item.employee, item.overallAvg]);
@@ -222,6 +246,7 @@
 
     // Prepare data for the bar chart (using the same chartData)
     var barData = chartData.map((item, index) => [index + 1, item.ticket]); // Create pairs for bar chart
+    console.log(barData)
     // Create the bar chart
     $.plot('#bar-chart', [{
       data: barData,

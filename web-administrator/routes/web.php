@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('ticket', TicketController::class);
 Route::get('/ticket/print/{id}', [TicketController::class, 'view_pdf'])->name('ticket.print');
+Route::get('/dashboard/print/{chart}', [TicketController::class, 'printChart'])->name('dashboard.print');
 
 Route::get('report/manager', [EvaluationController::class, 'manager'])->name('managerReport');
 Route::get('report/technicalSupport', [EvaluationController::class, 'technicalSupport'])->name('tsReport');
 
 Route::resource('ticketTask', TicketTaskController::class);
 Route::get('/ticketTask/print/{id}', [TicketTaskController::class, 'view_pdf'])->name('ticketTask.print');
+Route::get('/ticketTaskEvaluation/print/{chart}', [TicketTaskController::class, 'printChart'])->name('ticketTaskEvaluation.print');
 
 Route::resource('merchantTicket', MerchantTicketController::class);
 Route::put('/merchantTicket/comment/{id}', [MerchantTicketController::class, 'comment'])->name('ticket.comment');
