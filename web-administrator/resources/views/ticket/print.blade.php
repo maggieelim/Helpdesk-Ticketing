@@ -38,12 +38,16 @@
 </head>
 
 <body onload="window.print()">
-  <div class="custom-margin m-3">
+  <div class="m-4 col-6">
+    <img src="{{ asset('images/Indopay.png') }}" style="max-width: 20%; height: auto;">
+    <p>{{ $address->address }}</p>
+  </div>
+  <div class="custom-margin ">
     <div class="card m-3"> <!-- Add ID here -->
       <form class="form-horizontal">
         <div class="card-body">
           <div class="section" id="printable-area">
-            <h5>Merchant</h5>
+            <h5 style="font-weight: bold;">Merchant</h5>
             <div class="row">
               <div class="col-6">
                 <label class="form-label">Merchant ID</label>
@@ -57,7 +61,7 @@
           </div>
 
           <div class="section">
-            <h5>Technical Support</h5>
+            <h5 style="font-weight: bold;">Technical Support</h5>
             <div class="row">
               @if($data->action == null)
               <div class="col-6">
@@ -82,7 +86,7 @@
           </div>
 
           <div class="section">
-            <h5>Ticket Detail</h5>
+            <h5 style="font-weight: bold;">Ticket Detail</h5>
             <label class="form-label">Ticket Title</label>
             <p>{{ $data->title }}</p>
             <label class="form-label">Ticket Description</label>

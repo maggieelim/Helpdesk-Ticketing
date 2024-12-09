@@ -9,12 +9,6 @@
   <script src="https://cdn.jsdelivr.net/npm/flot/jquery.flot.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body {
-      margin: 20px;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-
     #chart-container {
       width: 600px;
       height: 400px;
@@ -32,7 +26,11 @@
 </head>
 
 <body>
-  <h1 id="chart-title">Print Chart</h1>
+  <div class="m-4">
+    <img src="{{ asset('images/Indopay.png') }}" style="max-width: 15%; height: auto;">
+    <p style="width: 60%;">{{ $address->address }}</p>
+  </div>
+  <h2 style="text-align: center;" id="chart-title">Print Chart</h2>
   <div id="chart-container">
     <canvas id="donutChart"></canvas>
     <canvas id="donutChart1"></canvas>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\employee;
 use App\Models\Merchant;
 use App\Models\Ticket;
@@ -86,7 +87,8 @@ class MerchantTicketController extends Controller
     public function view_pdf(string $id)
     {
         $data = Ticket::where('TID', $id)->first();
-        return view('merchant_ticket/print', compact('data'));
+        $address = Address::select('address')->distinct()->first();
+        return view('merchant_ticket/print', compact('data', 'address'));
     }
 
     /**

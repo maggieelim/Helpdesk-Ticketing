@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\Ticket;
 use App\Models\TicketStatus;
 use App\Models\TicketStatusDetail;
@@ -62,12 +63,14 @@ class TicketTaskController extends Controller
     public function view_pdf(string $id)
     {
         $data = Ticket::where('TID', $id)->first();
-        return view('ticketTask/print', compact('data'));
+        $address = Address::select('address')->distinct()->first();
+        return view('ticketTask/print', compact('data', 'address'));
     }
 
     public function printChart()
     {
-        return view('ticketTask/print_evaluation');
+        $address = Address::select('address')->distinct()->first();
+        return view('ticketTask/print_evaluation', compact('address'));
     }
     /**
      * Show the form for editing the specified resource.

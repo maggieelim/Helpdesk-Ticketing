@@ -7,11 +7,10 @@
   <title>Print Chart</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flot/jquery.flot.min.js"></script>
+
   <style>
     body {
       margin: 20px;
-      font-family: Arial, sans-serif;
-      text-align: center;
     }
 
     #chart-container {
@@ -23,9 +22,14 @@
 </head>
 
 <body>
-  <h1 id="chart-title">Print Chart</h1>
-  <div id="chart-container"></div>
-
+  <div class="m-4">
+    <img src="{{ asset('images/Indopay.png') }}" style="max-width: 15%; height: auto;">
+    <p style="width: 50%;">{{ $address->address }}</p>
+  </div>
+  <div class="custom-margin ">
+    <h2 style="text-align: center;" id="chart-title">Print Chart</h2>
+    <div id="chart-container"></div>
+  </div>
   <script>
     $(document).ready(function() {
       // Ambil data dari localStorage
