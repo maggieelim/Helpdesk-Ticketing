@@ -77,3 +77,7 @@ php artisan serve
 Aplikasi dapat diakses di **http://127.0.0.1:8000** atau URL yang tertera di terminal.
 
 ---
+## Manual Book
+
+Manual Book dapat diakses melalui tautan berikut:  
+[Helpdesk Ticketing Manual Book](https://drive.google.com/file/d/155ymvZ2WKWgtCFHo6S05Bn-_qFZD4RLi/view?usp=sharing)
