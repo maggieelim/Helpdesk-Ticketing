@@ -47,7 +47,7 @@ Untuk mengembalikan (restore) database PostgreSQL menggunakan **pgAdmin**, ikuti
 - Navigasikan ke lokasi file backup Anda (dengan ekstensi `.backup` atau `.sql`), pilih file tersebut, lalu klik **Select**.
 
 ### 5. Konfigurasi Opsi Restore
-- Pastikan format file backup sesuai dengan yang dipilih (misalnya, **Custom** atau **Plain**).
+- Pastikan format file backup sesuai (**Custom**).
 
 ### 6. Jalankan Proses Restore
 - Klik **Restore** untuk memulai proses.
